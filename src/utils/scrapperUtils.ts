@@ -1,7 +1,9 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
-export async function scrapeUrls(url: string) {
+const MAX_RETRIES = 3;
+
+export async function scrapeUrls(url: string, retries = 0):Promise<{ imageUrls: Set<string>, videoUrls: Set<string> }>{
   try {
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
@@ -42,6 +44,12 @@ export async function scrapeUrls(url: string) {
       videoUrls,
     };
   } catch (error) {
-    throw new Error(`Failed to scrape URL: ${url}`);
+     if (retries < MAX_RETRIES) {
+      console.warn(`Retrying (${retries + 1}/${MAX_RETRIES}) for URL: ${url}`);
+      return scrapeUrls(url, retries + 1);
+    } else {
+      console.error(`Failed to scrape URL after ${MAX_RETRIES} attempts: ${url}`, error);
+      throw error;
+    }
   }
 }
