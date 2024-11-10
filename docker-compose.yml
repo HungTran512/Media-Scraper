@@ -1,0 +1,31 @@
+services:
+  database:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - '5433:5432'
+    networks:
+      - media-scrapper
+
+  backend:
+    build:
+      context: .
+    command: npm run dev
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+    depends_on:
+      - database
+    ports:
+      - '${PORT}:${PORT}'
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - media-scrapper
+
+networks:
+  media-scrapper:
+    driver: bridge
