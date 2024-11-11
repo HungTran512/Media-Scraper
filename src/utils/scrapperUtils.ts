@@ -25,7 +25,6 @@ export async function scrapeUrls(url: string, retries = 0):Promise<{ imageUrls: 
     });
 
     $('video').each((_: any, element: any) => {
-      console.log('element', element);
       const src = $(element).attr('src');
       if (src) videoUrls.add(resolveUrl(src));
     });

@@ -45,7 +45,7 @@ This project is a media scraper that extracts image and video URLs from web page
 
 1. **Run the scraper**:
    ```bash
-   npm run scrape
+   npm run dev
    ```
 
 2. **Format the code**:
